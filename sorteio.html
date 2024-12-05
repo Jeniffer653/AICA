@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteador de Números</title>
+    <style>
+        /* Configuração geral do corpo da página */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #F0F4F8;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 80px; /* Espaço para o cabeçalho fixo */
+            box-sizing: border-box;
+        }
+
+        /* Cabeçalho */
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #FFFFFF; /* Cabeçalho branco */
+            padding: 20px 30px;
+            width: 100%;
+            box-sizing: border-box;
+            border-bottom: 1px solid #000000; /* Borda preta fina */
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        /* Logo no cabeçalho */
+        .logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Títulos do cabeçalho */
+        .header-text {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-left: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            color: #333;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 1.3em;
+            font-weight: 300;
+            color: #F1C40F; /* Amarelo forte */
+        }
+
+        /* Corpo da página */
+        .container {
+            display: flex;
+            justify-content: space-between;
+            text-align: center;
+            flex-grow: 1;
+            padding: 30px;
+            width: 100%;
+            max-width: 1400px;
+            margin-top: 100px; /* Para não sobrepor ao cabeçalho */
+            box-sizing: border-box;
+            overflow: auto;
+            margin-left: auto;
+            margin-right: auto;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Caixa de conteúdo */
+        .box {
+            width: 30%;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .box h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        /* Número sorteado */
+        .number-display {
+            font-size: 2em;
+            background-color: #F1C40F;
+            padding: 20px;
+            border-radius: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .button-container button {
+            background-color: #F1C40F; /* Amarelo forte */
+            color: black;
+            border: none;
+            padding: 15px 25px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px 0;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        .button-container button:hover {
+            background-color: #F39C12; /* Amarelo escuro */
+        }
+
+        /* Lista de números sorteados */
+        .results ul {
+            list-style-type: none;
+            padding: 0;
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .results li {
+            background: #f9f9f9;
+            margin: 5px;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-size: 1.1em;
+        }
+
+        .results li.premio-pego {
+            background-color: #4CAF50; /* Verde para prêmio pego */
+            color: white;
+        }
+
+        /* Resultado da busca */
+        .search-container input {
+            padding: 12px;
+            width: 100%;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        .search-container button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+        }
+
+        .search-result {
+            margin-top: 12px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .search-result.sorteado {
+            color: #4CAF50; /* Verde claro */
+        }
+
+        .search-result.nao-sorteado {
+            color: #F44336; /* Vermelho claro */
+        }
+
+        .mark-container {
+            margin-top: 10px;
+        }
+
+        .mark-container button {
+            background-color: #28a745;
+        }
+
+        .mark-container button:hover {
+            background-color: #218838;
+        }
+
+        .mark-container button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .box {
+                width: 100%;
+                margin: 10px 0;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .number-display {
+                font-size: 1.5em;
+                padding: 15px;
+            }
+
+            button {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+
+            .results h2 {
+                font-size: 1.2em;
+            }
+
+            .results li {
+                font-size: 1em;
+                padding: 10px;
+            }
+
+            .logo {
+                width: 80px;
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <img src="img/logo.png" alt="Logo da Associação" class="logo">
+    <div class="header-text">
+        <h1>Associação Irmãos do Caminho</h1>
+        <h2>Amor, Caridade e Fraternidade Sem Fronteiras</h2>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Box de Números Sorteados -->
+    <div class="box">
+        <h2>Números Sorteados</h2>
+        <div class="results">
+            <ul id="numerosSorteados"></ul>
+        </div>
+    </div>
+
+    <!-- Box do Número Sorteado -->
+    <div class="box">
+        <h2>Número Sorteado</h2>
+        <div id="numeroSorteado" class="number-display">Aguardando Sorteio...</div>
+        <div class="button-container">
+            <button onclick="sortearNumero()">Sortear Número</button>
+            <button onclick="reiniciar()">Reiniciar</button>
+        </div>
+    </div>
+
+    <!-- Box de Verificação -->
+    <div class="box">
+        <h2>Verificar Número</h2>
+        <div class="search-container">
+            <input type="number" id="numeroBusca" placeholder="Digite um número" min="1" max="1200">
+            <button onclick="verificarNumero()">Verificar</button>
+            <div id="resultadoBusca" class="search-result"></div>
+            <div id="marcarPremio" class="mark-container"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let numerosSorteados = [];
+    let premiosPegos = new Set();
+
+    function sortearNumero() {
+        if (numerosSorteados.length >= 1200) {
+            alert('Todos os números já foram sorteados!');
+            return;
+        }
+
+        let numero;
+        do {
+            numero = Math.floor(Math.random() * 1200) + 1;
+        } while (numerosSorteados.includes(numero));
+
+        document.getElementById('numeroSorteado').textContent = `Número Sorteado: ${numero}`;
+        numerosSorteados.push(numero);
+        atualizarLista();
+    }
+
+    function atualizarLista() {
+        const lista = document.getElementById('numerosSorteados');
+        lista.innerHTML = '';
+        numerosSorteados.forEach(numero => {
+            const li = document.createElement('li');
+            li.textContent = numero;
+            if (premiosPegos.has(numero)) {
+                li.classList.add('premio-pego');
+            }
+            lista.appendChild(li);
+        });
+    }
+
+    function reiniciar() {
+        numerosSorteados = [];
+        premiosPegos.clear();
+        document.getElementById('numeroSorteado').textContent = 'Aguardando Sorteio...';
+        atualizarLista();
+    }
+
+    function verificarNumero() {
+        const numero = parseInt(document.getElementById('numeroBusca').value);
+        const resultadoBusca = document.getElementById('resultadoBusca');
+        const marcarPremio = document.getElementById('marcarPremio');
+
+        if (!numero || numero < 1 || numero > 1200) {
+            resultadoBusca.textContent = 'Por favor, insira um número válido entre 1 e 1200.';
+            resultadoBusca.className = 'search-result nao-sorteado';
+            return;
+        }
+
+        if (premiosPegos.has(numero)) {
+            resultadoBusca.textContent = 'Número já pegou o prêmio!';
+            resultadoBusca.className = 'search-result sorteado';
+            marcarPremio.innerHTML = '';
+            return;
+        }
+
+        if (numerosSorteados.includes(numero)) {
+            resultadoBusca.textContent = 'Número sorteado!';
+            resultadoBusca.className = 'search-result sorteado';
+            marcarPremio.innerHTML = `<button onclick="marcarPremio(${numero})">Marcar Prêmio</button>`;
+        } else {
+            resultadoBusca.textContent = 'Número não sorteado.';
+            resultadoBusca.className = 'search-result nao-sorteado';
+        }
+    }
+
+    function marcarPremio(numero) {
+        if (premiosPegos.has(numero)) {
+            alert('Este prêmio já foi marcado!');
+            return;
+        }
+
+        premiosPegos.add(numero);
+        atualizarLista();
+        document.getElementById('marcarPremio').innerHTML = '';
+    }
+</script>
+
+</body>
+</html>
